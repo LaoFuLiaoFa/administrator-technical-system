@@ -102,7 +102,7 @@ export default {
       // 分页
       cur: 1,
       totalpage: 0,
-      pageSize: 1,
+      pageSize: 2,
       showPage: [],
       // 搜索关键字
       data: '',
