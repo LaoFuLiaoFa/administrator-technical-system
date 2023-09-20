@@ -60,7 +60,7 @@ export default {
   methods: {
     async search () {
       const { data: res } = await this.$http.post('admin/search', { Authorization: 'bearer', token: window.sessionStorage.token, content: this.data })
-      if (res.data === []) { this.$message.error('查询失败') } else { this.showPage = res.data }
+      if (res.code !== 200) { this.$message.error('查询失败') } else { this.showPage = res.data }
     },
     async getMenuList () {
       const { data: res } = await this.$http.post('admin/findusers', { Authorization: 'bearer', token: window.sessionStorage.token })
