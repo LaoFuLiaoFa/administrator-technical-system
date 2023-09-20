@@ -158,8 +158,6 @@ export default {
         content: this.input3
       })
       console.log(res.data)
-      const datalist = res.data
-      this.searchResults = datalist
     },
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
