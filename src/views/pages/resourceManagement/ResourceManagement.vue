@@ -158,6 +158,7 @@ export default {
         content: this.input3
       })
       console.log(res.data)
+      this.tableData = res.data
     },
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
