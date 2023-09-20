@@ -12,28 +12,28 @@
 <div>
   <el-card>
     <el-input placeholder="请输入关键字" v-model="input3" class="input-with-select">
-      <el-button slot="append" icon="el-icon-search"></el-button>
+      <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
     </el-input>
     <el-table
     border
       :header-cell-style="{ textAlign: 'center' }"
       :cell-style="{ textAlign: 'center' }"
       style="margin-bottom: 1.5%;"
-    :data="tableData"
+      :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)"
     >
     <el-table-column label="标题" width="180">
       <template slot-scope="scope">
-        <span>{{ scope.row.name }}</span>
+        <span>{{ scope.row.title }}</span>
       </template>
     </el-table-column>
     <el-table-column label="内容" width="180">
       <template slot-scope="scope">
-        <span>{{ scope.row.name }}</span>
+        <span>{{ scope.row.content }}</span>
       </template>
     </el-table-column>
     <el-table-column label="姓名" width="100">
       <template slot-scope="scope">
-        <span>{{ scope.row.name }}</span>
+        <span>{{ scope.row.username }}</span>
       </template>
     </el-table-column>
     <el-table-column
@@ -47,27 +47,31 @@
       label="职位"
       width="180">
       <template slot-scope="scope">
-        <span>{{ scope.row.class }}</span>
+        <span>{{ scope.row.userposition }}</span>
       </template>
     </el-table-column>
     <el-table-column
       label="资源类型"
       width="180">
       <template slot-scope="scope">
-        <span>{{ scope.row.class }}</span>
+        <span>{{ scope.row.type }}</span>
       </template>
     </el-table-column>
     <el-table-column
       label="资源方向"
       width="180">
       <template slot-scope="scope">
-        <span>{{ scope.row.class }}</span>
+        <span>{{ scope.row.directiontype }}</span>
       </template>
     </el-table-column>
     <el-table-column label="操作" fixed="right" width="200">
       <template slot-scope="scope">
         <div class="button-group">
-          <el-button type="info" size="small" @click="table_show(scope.row, scope.$index)">查看</el-button>
+          <a :href="scope.row.url" target="_blank">
+            <el-button type="info" size="small">
+            查看
+          </el-button>
+        </a>
           <el-button type="primary" size="small" @click="table_edit(scope.row, scope.$index)" style="margin-left: 0">编辑</el-button>
           <el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
             <template #reference>
@@ -78,52 +82,91 @@
       </template>
     </el-table-column>
   </el-table>
-  <el-pagination
-    background
-    layout="prev, pager, next"
-    :total="1000">
-</el-pagination>
+<!-- 分页 -->
+<div class="block" align="center">
+      <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 30, 40]" layout="prev, pager, next"
+        :total="tableData.length" align="center">
+      </el-pagination>
+    </div>
   </el-card>
-        <saveDialog :visible.sync="editshow" />
+        <saveDialog ref="save" :data="editData" />
 </div>
 </template>
 
 <script>
 import saveDialog from './save'
 export default {
+  emits: ['success', 'closed', 'reloadData'],
   components: {
     saveDialog
   },
   data () {
     return {
-      editshow: false,
       input3: '',
-      tableData: [{
-        name: '王小虎',
-        class: '23023'
-      }, {
-        name: '王小虎',
-        class: '23023'
-      }, {
-        name: '王小虎',
-        class: '23023'
-      }, {
-        name: '王小虎',
-        class: '23023'
-      }, {
-        name: '王小虎',
-        class: '23023'
-      }, {
-        name: '王小虎',
-        class: '23023'
-      }]
+      // 表格
+      tableData: [],
+      // 分页
+      currentPage: 1,
+      pageSize: 9,
+      id: '',
+      url: ' ',
+      searchResults: [], // 存储搜索结果
+      editData: {
+        name: 'John Doe',
+        age: 30,
+        email: 'john@example.com'
+      },
+      downloadUrl: ''
     }
   },
+  mounted () {
+    this.getList()
+  },
   methods: {
-    table_edit () {
-      this.editshow = true
+    async getList () {
+      const { data: res } = await this.$http.post('/api/admin/FindResouce')
+      console.log(res)
+      this.tableData = res.data
     },
-    table_del () {
+    table_edit (row) {
+      this.$refs.save.show()
+      console.log(row.id)
+      sessionStorage.setItem('id', row.id)
+    },
+
+    async table_del (row) {
+      sessionStorage.setItem('id', row.id)
+      const { data: res } = await this.$http.post('/api/admin/tzldelete', {
+        id: sessionStorage.getItem('id')
+      })
+      console.log(res)
+      if (res.code === 200) {
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
+      } else {
+        this.$message({
+          message: '删除失败！请重试！',
+          type: 'warning'
+        })
+      }
+    },
+    async search () {
+      const { data: res } = await this.$http.post('/api/admin/SearchResouce', {
+        content: this.input3
+      })
+      console.log(res.data)
+      const datalist = res.data
+      this.searchResults = datalist
+    },
+    handleSizeChange (val) {
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange (currentPage) {
+      // console.log(`当前页: ${val}`)
+      this.currentPage = currentPage
     }
   }
 }

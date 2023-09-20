@@ -56,9 +56,29 @@ export default {
     }
   },
   methods: {
-    login () {
-      this.$router.push('/HomeScaffold')
+    async login () {
+      // console.log(this.loginForm.username)
+      // console.log(this.loginForm.password)
+      const { data: res } = await this.$http.post('/api/adminLogin', {
+        account: this.loginForm.username,
+        password: this.loginForm.password
+      })
+      // console.log(res.data)
+      if (res.code === 200) {
+        this.$message({
+          message: '登录成功',
+          type: 'success'
+        })
+        this.$router.push('/HomeScaffold')
+        window.localStorage.setItem('token', res.data)
+      } else {
+        this.$message({
+          message: '登录失败！请重试！',
+          type: 'warning'
+        })
+      }
     }
+    // this.$router.push('/HomeScaffold')
   }
 }
 </script>
