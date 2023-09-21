@@ -46,4 +46,16 @@ const router = new VueRouter({
   routes
 })
 
+// 挂载路由导航守卫
+// router.beforeEach((to, from, next) => {
+//   // to 将要访问的路径
+//   // from代表从哪个路径跳转过来
+//   // next是一个函数 ，表示放行
+//   // next()放行 next('/login')强制跳转
+//   if (to.path === '/LogIn') return next()
+//   const tokenStr = window.messionStorage.getItem('token')
+//   if (!tokenStr) return next('/LogIn')
+//   next()
+// })
+
 export default router

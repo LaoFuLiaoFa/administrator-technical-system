@@ -13,7 +13,8 @@
       <!-- 登录表单区 -->
       <el-form :model="loginForm" :rules="loginFormRules" ref="loginFormRef" class="login_form">
         <!-- 用户名 -->
-        <el-form-item prop="username" style="margin-bottom: 4rem;">
+
+        <el-form-item prop="account" style="margin-bottom: 4rem;">
           <el-input v-model="loginForm.account" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <!-- 密码 -->
@@ -43,7 +44,7 @@ export default {
       // 表单验证规则对象
       loginFormRules: {
         // 验证用户名是否合法
-        username: [
+        account: [
           { required: true, message: '请输入用户名称', trigger: 'blur' },
           { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
         ],
@@ -120,11 +121,6 @@ transform: translate(0%,0%); */
   width: 401px;
   height: 40px;
   color: #025478;
-}
-
-.total {
-  /* margin: 0 auto; */
-  /* margin-top: 10%; */
 }
 
 .title {

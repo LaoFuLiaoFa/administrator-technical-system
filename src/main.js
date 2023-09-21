@@ -9,7 +9,6 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import axios from 'axios'
-
 Vue.prototype.$http = axios
 // 配置URL
 axios.defaults.baseURL = 'http://150.158.53.178:6290'
