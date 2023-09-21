@@ -13,6 +13,7 @@
       <!-- 登录表单区 -->
       <el-form :model="loginForm" :rules="loginFormRules" ref="loginFormRef" class="login_form">
         <!-- 用户名 -->
+
         <el-form-item prop="account" style="margin-bottom: 4rem;">
           <el-input v-model="loginForm.account" placeholder="请输入用户名"></el-input>
         </el-form-item>
@@ -57,12 +58,26 @@ export default {
   },
   methods: {
     async login () {
-      const { data: res } = await this.$http.post('adminLogin', this.loginForm)
-      if (res.code !== 200) return this.$message.error('登陆失败')
-      this.$message.success('登陆成功')
-      window.sessionStorage.setItem('token', res.data)
-      this.$router.push('/HomeScaffold')
+      const { data: res } = await this.$http.post('/api/adminLogin', {
+        account: this.loginForm.username,
+        password: this.loginForm.password
+      })
+      // console.log(res.data)
+      if (res.code === 200) {
+        this.$message({
+          message: '登录成功',
+          type: 'success'
+        })
+        this.$router.push('/HomeScaffold')
+        window.localStorage.setItem('token', res.data)
+      } else {
+        this.$message({
+          message: '登录失败！请重试！',
+          type: 'warning'
+        })
+      }
     }
+    // this.$router.push('/HomeScaffold')
   }
 }
 </script>
