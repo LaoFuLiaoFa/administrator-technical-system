@@ -14,7 +14,7 @@
       <el-form :model="loginForm" :rules="loginFormRules" ref="loginFormRef" class="login_form">
         <!-- 用户名 -->
         <el-form-item prop="username" style="margin-bottom: 4rem;">
-          <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
+          <el-input v-model="loginForm.account" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password" style="margin-bottom: 4rem;">
@@ -37,8 +37,8 @@ export default {
     return {
       // 这是登陆表单的数据绑定对象
       loginForm: {
-        username: '',
-        password: ''
+        account: '1179378262',
+        password: 'wzh123'
       },
       // 表单验证规则对象
       loginFormRules: {
@@ -57,8 +57,6 @@ export default {
   },
   methods: {
     async login () {
-      // console.log(this.loginForm.username)
-      // console.log(this.loginForm.password)
       const { data: res } = await this.$http.post('/api/adminLogin', {
         account: this.loginForm.username,
         password: this.loginForm.password
